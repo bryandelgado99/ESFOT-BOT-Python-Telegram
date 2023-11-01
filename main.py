@@ -38,10 +38,10 @@ bot = telebot.TeleBot(Telegram_Token)
 def start_cmd(message):
     bot.send_chat_action(message.chat.id, "Typing")
     #Welcome Message
-    bot.send_message(message.chat.id, "Hola, me llamo Esfotito 🦉 y seré tu asistente para conocer sobre los procesos académicos en la ESFOT.")
     bot.send_photo(message.chat.id, start_img, "<b>Bienvenido al Chatbot de la ESFOT - EPN</b>", parse_mode="html")
+    bot.send_message(message.chat.id, "Hola, me llamo Esfotito 🦉 y seré tu asistente para conocer sobre los procesos académicos en la ESFOT.")
     time.sleep(3)
-    bot.send_message(message.chat.id, "Para continuar, por favor selecciona los comandos en el botón [Menú] de tu barra de acciones o, el botón [/] en el mismo lugar.")
+    bot.send_message(message.chat.id, "\nPara continuar, por favor selecciona los comandos en el botón [Menú] de tu barra de acciones o, el botón [/] en el mismo lugar.")
 
 '''--------- Respondes to /Matriculas ------------'''
 @bot.message_handler(commands=["matriculas"])
