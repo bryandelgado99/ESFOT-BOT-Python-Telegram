@@ -1,9 +1,8 @@
 import telebot
 import threading
 from telebot.types import ReplyKeyboardMarkup #Create Buttons
+from telebot.types import ForceReply #Create Automatic replays
 import time
-import emoji
-import os
 from config import *
 
 #Commands List
@@ -47,13 +46,36 @@ def start_cmd(message):
 '''--------- Respondes to /Matriculas ------------'''
 @bot.message_handler(commands=["matriculas"])
 def matriculas_msg(message):
-    set_commands
+    #Texet separator
     separator = bot.send_message(message.chat.id, "<i> [ --- Has seleccionado Matriculas --- ]</i>", parse_mode="html")
-    time.sleep(5)
+    time.sleep(3)
     bot.edit_message_text("*** *** *** *** ***", message.chat.id, separator.message_id)
     bot.send_message(message.chat.id, matricula_title, parse_mode="html")
 
-    
+    #Survery to access the information
+    bot.send_message(message.chat.id, "\nAntes de continuar, por favor responde la siguiente pregunta, para poder acceder a la informacion deseas.\n")
+
+    #Suvery buttons
+    markup = ForceReply()
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, input_field_placeholder="Selecciona una opcion: ")
+    markup.add("Nivelacion", "Pregrado")
+    msg = bot.send_message(message.chat.id, "<i><b>¿Cuál es el nivel académico que vas a cursar 👇?</b></i>", parse_mode="html", reply_markup=markup)
+    bot.register_next_step_handler(msg, level_select)
+
+#Level Select options
+def level_select(message):
+    if message.text == "Nivelacion":
+        print("Hola")
+    if message.text == "Pregrado":
+        print("Adios")
+    else:
+        bot.send_message(message.chat.id, advise_title + "\n\nLa opción no es válida, por favor reintente.", parse_mode="html")
+        markup = ForceReply()
+        markup = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True, input_field_placeholder="Selecciona una opcion: ")
+        markup.add("Nivelacion", "Pregrado")
+        msg = bot.send_message(message.chat.id, "<i><b>¿Cuál es el nivel académico que vas a cursar 👇?</b></i>", parse_mode="html", reply_markup=markup)
+        bot.register_next_step_handler(msg, level_select)
+        
 
 '''--------- Respondes to /Practicas ------------'''
 
@@ -87,7 +109,7 @@ def text_msgs(message):
         bot.send_chat_action(message.chat.id, "Typing")
         edit_message = bot.send_message(message.chat.id, "Tienes muchas dudas y Esfotito te las solucionará 👋")
         time.sleep(60)
-        bot.edit_message_text("Gracias por preguntarle a <i><u>Esfotito</u></i> 🦉", message.chat.id, edit_message.message_id, parse_mode="html")
+        bot.edit_message_text(message.chat.id, "Gracias por preguntarle a <i><u>Esfotito</u></i> 🦉", message.chat.id, edit_message.message_id, parse_mode="html")
 #----------------------------------------------------------------------
 #Get Messages Function (With pollying infinity)
 def get_msgs():
