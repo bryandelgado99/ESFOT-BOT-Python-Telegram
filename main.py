@@ -2,11 +2,12 @@ import telebot
 import threading
 from telebot.types import ReplyKeyboardMarkup #Create Buttons
 from telebot.types import ForceReply #Create Automatic replays
+from telebot.types import ReplyKeyboardRemove
 import time
 from config import *
 
 #Commands List
-commands = ["start", "matriculas", "praticas", "vinculacion", "preguntas_frecuentes", "contactos", "regresar"]
+commands = ["start", "aulas", "matriculas", "praticas", "vinculacion", "preguntas_frecuentes", "contactos", "regresar"]
 
 #Links and important data
 calendario_2023b = '<a href="https://esfot.epn.edu.ec/index.php/esfot/676-calendario-academico-2023-b">Calendario Académico 2023-B</a>' + '\n'
@@ -36,12 +37,16 @@ bot = telebot.TeleBot(Telegram_Token)
 '''--------- Responses to /Start CMD -----------'''
 @bot.message_handler(commands=["start"])
 def start_cmd(message):
+    markup = ReplyKeyboardRemove()
     bot.send_chat_action(message.chat.id, "Typing")
     #Welcome Message
     bot.send_photo(message.chat.id, start_img, "<b>Bienvenido al Chatbot de la ESFOT - EPN</b>", parse_mode="html")
     bot.send_message(message.chat.id, "Hola, me llamo Esfotito 🦉 y seré tu asistente para conocer sobre los procesos académicos en la ESFOT.")
     time.sleep(3)
     bot.send_message(message.chat.id, "\nPara continuar, por favor selecciona los comandos en el botón [Menú] de tu barra de acciones o, el botón [/] en el mismo lugar.")
+
+'''--------- Respondes to /Aulas ------------'''
+
 
 '''--------- Respondes to /Matriculas ------------'''
 @bot.message_handler(commands=["matriculas"])
@@ -120,6 +125,7 @@ def get_msgs():
 def set_commands():
     bot.set_my_commands([
         telebot.types.BotCommand("/start", "Inicializa el bot."),
+        telebot.types.BotCommand("/aulas", "Conoce acerca de la ubicación de las aulas corespondientes a cada facultad."),
         telebot.types.BotCommand("/matriculas", "Obten información acerca del proceso de matrículas."),
         telebot.types.BotCommand("/practicas", "Obten información acerca del proceso de prácticas pre-profesionales y pasantías."),
         telebot.types.BotCommand("/vinculacion", "Obten información acerca del proceso de prácticas comuitarias o vinculación social."),
@@ -129,19 +135,12 @@ def set_commands():
     ])
 
 
-#-------------------- Telegram Channel Bot News Deployment ---------------------
-'''Date: 30/10/2023
-#Welcome Message
-bot.send_message(Channel_ID, "Bienvenidos al Canal de <b><i>ESFOT NEWS</i></b>.", parse_mode="html")
-bot.send_photo(Channel_ID, start_img, "Les saluda su comunicador, Esfotito, quien les mantendra al tanto de las novedades en la ESFOT.")'''
-
-
 # Main Funciton with infinity polling
 if __name__ == "__main__":
 
     #Define Commands menu
     set_commands
-
+    #Main Polling Bucle
     print(" ********************** Iniciando el Bot *********************** ")
     hilo_bot = threading.Thread(name="hilo_bot", target=get_msgs)
     hilo_bot.start()
